@@ -38,32 +38,32 @@ const handleSocketConnection = (socket, io) => {
                         duration = 'N/A';
                     }
                 }
-                // return {
-                //     userId: id,
-                //     lat: users[id]?.lat,
-                //     lng: users[id]?.lng,
-                //     distance,
-                //     eta: duration,
-                // };
+                return {
+                    userId: id,
+                    lat: users[id]?.lat,
+                    lng: users[id]?.lng,
+                    distance,
+                    eta: duration,
+                };
             })
         );
 
-        // io.to(roomId).emit('usere-offline', updatedUsers);
+        io.to(roomId).emit('usere-offline', updatedUsers);
     });
 
-    // socket.on('disconnect', () => {
-    //     const roomId = socket.roomId;
-    //     if (roomId && roomUsers[roomId]) {
-    //         delete roomUsers[roomId][socket.id];
-    //         io.to(roomId).emit('usere-offline', Object.keys(roomUsers[roomId]).map(id => ({
-    //             userId: id,
-    //             ...roomUsers[roomId][id],
-    //         })));
-    //         if (Object.keys(roomUsers[roomId]).length === 0) {
-    //             delete roomUsers[roomId];
-    //         }
-    //     }
-    // });
+    socket.on('disconnect', () => {
+        const roomId = socket.roomId;
+        if (roomId && roomUsers[roomId]) {
+            delete roomUsers[roomId][socket.id];
+            io.to(roomId).emit('user-offline', Object.keys(roomUsers[roomId]).map(id => ({
+                userId: id,
+                ...roomUsers[roomId][id],
+            })));
+            if (Object.keys(roomUsers[roomId]).length === 0) {
+                delete roomUsers[roomId];
+            }
+        }
+    });
 };
 
-// module.exports = { handleSocketConnection };
+module.exports = { handleSocketConnection };

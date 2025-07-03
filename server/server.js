@@ -2,7 +2,8 @@ const express =require('express')
 const cors=require('cors')
 const http=require('http')
 const {Server}=require('socket.io')
-
+const handleSocketConnection=require('./socketHandler.js')
+const LocationRoute = require('./routes/LocationRoute.js')
 
 const app=express()
 app.use(cors({
@@ -27,7 +28,7 @@ app.get('/',(req,res)=>{
     res.send("Hello from the server!")
 })
 
-// app.use('api/locations','')
+app.use('api/locations',LocationRoute)
 
 io.on('connection',(socket)=>{
     console.log('A user connected:',socket?.id);

@@ -35,3 +35,29 @@ exports.calculateDistanceAndETA=async(origin,destination)=>{
             throw new Error('Error calculating distance and ETA');
         }
 }
+
+exports.getRoute=async(req,res)=>{
+    const {start,end}=req.body;
+    const apiKey=process.env.ORS_API_KEY;
+    const url='https://api.openrouteservice.org/v2/directions/driving-car/geojson';
+    try {
+        const response=await axios.post(
+            url,
+            {
+                coordinates: [
+                    [start.lng,start.lat],
+                    [end.lng,end.lat]
+                ]
+            },
+            {
+                headers:{
+                    Authorization:apiKey,
+                    'Content-Type':'application/json'
+                }
+            }
+        );
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching route', error: error.response?.data || error.message });
+    }
+}
