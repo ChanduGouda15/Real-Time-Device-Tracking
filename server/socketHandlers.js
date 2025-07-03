@@ -1,7 +1,7 @@
-//const User = require('./models/User');
+
 const { calculateDistanceAndETA } = require('./controllers/locationController');
 
-let roomUsers = {}; // { roomId: { userId: { lat, lng } } }
+let roomUsers = {}; 
 
 const handleSocketConnection = (socket, io) => {
     console.log('New client connected:', socket.id);
@@ -20,12 +20,11 @@ const handleSocketConnection = (socket, io) => {
 
         roomUsers[roomId][socket.id] = { lat, lng };
 
-        // Calculate distances/ETAs for all users in the room
+        
         const users = roomUsers[roomId];
         const updatedUsers = await Promise.all(
             Object.keys(users).map(async (id) => {
                 let distance = null, duration = null;
-                // Find the "me" user for each client
                 if (users[socket.id] && users[id]) {
                     try {
                         if (id !== socket.id) {
@@ -55,7 +54,7 @@ const handleSocketConnection = (socket, io) => {
         const roomId = socket.roomId;
         if (roomId && roomUsers[roomId]) {
             delete roomUsers[roomId][socket.id];
-            io.to(roomId).emit('user-offline', Object.keys(roomUsers[roomId]).map(id => ({
+            io.to(roomId).emit('usere-offline', Object.keys(roomUsers[roomId]).map(id => ({
                 userId: id,
                 ...roomUsers[roomId][id],
             })));
